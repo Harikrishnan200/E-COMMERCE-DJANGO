@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Product
+from .models import Product,SubImage,ProductSize
 from django.core.paginator import Paginator
 # Create your views here.
 
@@ -8,7 +8,7 @@ def index(request):
 
 def list_product(request):
     page = 1
-    
+
     if 'page' in request.GET:
         page = request.GET.get('page')
 
@@ -20,8 +20,18 @@ def list_product(request):
     }
     return render(request,'product_page_content.html',context)
 
-def detail_product(request):
-    return render(request,'product_details.html')
+def detail_product(request,pk=None):
+    sub_images = None
+    product = Product.objects.get(id=pk)
+    sub_images = SubImage.objects.filter(product=product)   # To filter the sub images of the product
+    sizes = ProductSize.objects.filter(product=product)
+ 
+    context = {
+        'product': product,
+        'sub_images': sub_images,
+        'sizes': sizes
+    }
+    return render(request,'product_details.html',context)
 
 def cart(request):
     return render(request,'cart.html')

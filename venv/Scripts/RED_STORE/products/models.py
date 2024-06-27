@@ -37,8 +37,45 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
+        return f"{self.title} - {self.model}"
     
 
     
+class SubImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sub_images')
+    image = models.ImageField(upload_to='product_images/sub_images/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.product.title} - {self.product.model} - SubImage {self.id}"
+
+class Size(models.Model):
+    SIZE_CHOICES = (
+        ('XS', 'Extra Small'),
+        ('S', 'Small'),
+        ('M', 'Medium'),
+        ('L', 'Large'),
+        ('XL', 'Extra Large'),
+        ('XXL', 'Double Extra Large')
+    )
+
+    size = models.CharField(max_length=3, choices=SIZE_CHOICES, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.size
+
+class ProductSize(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_sizes')
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name='product_sizes')
+    quantity = models.PositiveIntegerField(default=0)  # Quantity available for this size
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('product', 'size')
+
+    def __str__(self):
+        return f"{self.product.title} - {self.product.model} - Size {self.size.size}"
