@@ -2,19 +2,21 @@
 
 <h2 class="title">Latest Products</h2>
     <div class="row">
+        {% for product in latest_products %}
         <div class="col-4">
-            <img src="{% static 'images/product-5.jpg' %}">
-            <h4>Red Printed T-Shirt</h4>
-            <div class="rating">
+            <a href="{% url 'detail_product' product.id %}"><img src="{{product.image.url}}"></a>
+            <h4>{{product.title}}</h4>
+            <!-- <div class="rating">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star-o"></i>
-            </div>
-            <p>$50.00</p>
+            </div> -->
+            <p>$ {{product.price}}</p>
         </div>
-        <div class="col-4">
+        {% endfor %}
+        <!-- <div class="col-4">
             <img src="{% static 'images/product-6.jpg' %}">
             <h4>Red Printed T-Shirt</h4>
             <div class="rating">
@@ -99,5 +101,5 @@
                 <i class="fa fa-star-o"></i>
             </div>
             <p>$50.00</p>
-        </div>
+        </div> -->
     </div>
