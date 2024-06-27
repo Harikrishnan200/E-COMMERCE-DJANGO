@@ -29,7 +29,7 @@ class Product(models.Model):
     price = models.FloatField()
     discount_price = models.FloatField()
     description = models.TextField()
-    image = models.ImageField(upload_to='media')
+    image = models.ImageField(upload_to='product_images/')
     priority = models.IntegerField(default=0)
     delete_status = models.IntegerField(choices=DELETE_CHOICES,default=LIVE)
     is_available = models.BooleanField(default=True)
