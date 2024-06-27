@@ -202,6 +202,7 @@ small{
     color: #8a8a8a;
     font-size: 14px;
     padding: 60px 0 20px;
+    
 }
 .footer p{
     color: #8a8a8a;
@@ -388,7 +389,7 @@ th:last-child{
 .form-container{
     background: #fff;
     width: 300px;
-    height: 400px;
+    height: 515px;
     position: relative;
     text-align: center;
     padding: 20px 0;
@@ -396,6 +397,29 @@ th:last-child{
     box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
+
+
+.message-container{
+    width: 300px;
+    height: 47px;
+    position: relative;
+    text-align: center;
+    padding: 20px 0;
+    margin: auto;
+    overflow: hidden;
+    margin-right: 151px;
+    margin-top: -20px;
+    margin-bottom: 30px;
+}
+
+.messages.error{
+    color: red;
+}
+
+.messages.success{
+    color: green;
+}
+
 .form-container span{
     font-weight: bold;
     padding: 0 10px;
@@ -403,6 +427,7 @@ th:last-child{
     cursor: pointer;
     width: 100px;
     display: inline-block;
+    
 }
 .form-btn{
     display: inline-block;
@@ -420,6 +445,7 @@ form input{
     margin: 10px 0;
     padding: 0 10px;
     border: 1px solid #ccc;
+    
 }
 form .btn{
     width: 100%;

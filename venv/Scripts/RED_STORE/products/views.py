@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Product,SubImage,ProductSize
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login as userLogin , logout as userLogout
 # Create your views here.
 
 def index(request):
@@ -48,5 +50,3 @@ def detail_product(request,pk=None):
 def cart(request):
     return render(request,'cart.html')
 
-def account(request):
-    return render(request,'account.html')
