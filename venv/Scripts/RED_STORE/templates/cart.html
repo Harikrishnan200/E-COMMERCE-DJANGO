@@ -28,8 +28,8 @@
                     </div>
                 </div>
             </td>
-            <td><input type="number" value="{{item.quantity}}"></td>
-            <td>$ {% multiply item.product.price  item.quantity %}</td>
+            <td>{{item.quantity}}</td>
+            <td>$ {% multiply item.product.total_price  item.quantity %}</td>   <!--  multiply  is the template tag , it has two parameters quantity and price-->
         </tr>
 
         {% endfor %}
@@ -44,8 +44,8 @@
     <div class="total-price">
         <table>
             <tr>
-                <td>Subtotal</td>
-                <td>$ {% get_total_price cart_obj %}</td>
+                <td>Total Price</td>
+                <td>$ {% get_total_price cart_obj %}</td>   <!--  get_total_price  is the template tag-->
             </tr>
             
             

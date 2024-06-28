@@ -15,30 +15,43 @@ class Category(models.Model):
     
 
     
+from django.db import models
+
 class Product(models.Model):
     LIVE = 1
     DELETE = 2
     DELETE_CHOICES = (
-                (LIVE, 'Live'),
-                (DELETE,'Delete')
-            )
+        (LIVE, 'Live'),
+        (DELETE, 'Delete')
+    )
+    
     title = models.CharField(max_length=200)
-    model = models.CharField(max_length=50,unique=True)
-    slug = models.SlugField(max_length=200,unique=True)
-    category = models.ForeignKey(Category,on_delete=models.CASCADE,related_name='category')
+    model = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=200, unique=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category')
     price = models.FloatField()
-    discount_price = models.FloatField()
+    actual_price = models.FloatField(default=0.0)
+    discount_in_percentage = models.PositiveIntegerField(default=0)
+    total_price = models.FloatField(default=0.0)
+    stock = models.PositiveIntegerField(default=0)
     description = models.TextField()
     image = models.ImageField(upload_to='product_images/')
     priority = models.IntegerField(default=0)
-    delete_status = models.IntegerField(choices=DELETE_CHOICES,default=LIVE)
+    delete_status = models.IntegerField(choices=DELETE_CHOICES, default=LIVE)
     is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    def save(self, *args, **kwargs):
+       
+        self.actual_price = self.price
+        self.discount_in_percentage  = self.discount_in_percentage 
+        # Calculate total_price based on price and discount_price
+        self.total_price = self.price - (self.price * self.discount_in_percentage /100)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.title} - {self.model}"
-    
 
     
 class SubImage(models.Model):
