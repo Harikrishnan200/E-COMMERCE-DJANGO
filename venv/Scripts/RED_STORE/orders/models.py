@@ -1,5 +1,6 @@
 from django.db import models
 from customer.models import Customer
+from products.models import Product,ProductSize
 # Create your models here.
 
 # for cart objects of a customer. Ushually a customer have more than one cart
@@ -28,10 +29,11 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-# This model is used to specify the details of each cart items like quantity
+# This model is used to specify the details of each cart items like product, its quantity
 class OrderedItem(models.Model):
     product = models.ForeignKey('products.Product',related_name='product_items',on_delete=models.CASCADE)  # products.Product defines a foreign key relationship between the model in which this line appears and the Product model located in the products app.
     quantity = models.IntegerField(default=1)
+    size = models.ForeignKey(ProductSize, on_delete=models.SET_NULL,null=True,related_name='product_size')
     owner = models.ForeignKey(Order,related_name='added_carts',on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

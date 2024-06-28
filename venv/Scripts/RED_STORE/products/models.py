@@ -51,6 +51,12 @@ class SubImage(models.Model):
         return f"{self.product.title} - {self.product.model} - SubImage {self.id}"
 
 class Size(models.Model):
+    XS = 1
+    S = 2
+    M = 3
+    L = 4
+    XL = 5
+    XXL = 6
     SIZE_CHOICES = (
         ('XS', 'Extra Small'),
         ('S', 'Small'),

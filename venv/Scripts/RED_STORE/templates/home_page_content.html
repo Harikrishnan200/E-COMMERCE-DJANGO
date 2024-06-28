@@ -20,7 +20,7 @@
                 </ul>
             </nav>
             {% if user.is_authenticated %}
-            <a href="{% url 'cart_page' %}"><img src="{% static 'images/cart.png' %}" width="30px" height="30px"></a>
+            <a href="{% url 'cart' %}"><img src="{% static 'images/cart.png' %}" width="30px" height="30px"></a>
             <img src="{% static 'images/menu.png' %}" class="menu-icon" onclick="menutoggle()">
             {% endif %}
         </div>
