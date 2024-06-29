@@ -14,7 +14,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 # for auto generation of slug field in Product table from model fields
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['title','model','price','discount_in_percentage','actual_price','total_price','delete_status','is_available','created_at']
+    list_display = ['title','model','price','discount_in_percentage','actual_price','total_price','stock','delete_status','is_available','created_at']
     list_filter = ['delete_status','is_available','created_at','updated_at']
     search_fields = ['title','model','price','discount_price','description','priority']
     prepopulated_fields = {'slug':('title',)}

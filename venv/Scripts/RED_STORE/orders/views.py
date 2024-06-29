@@ -6,6 +6,15 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.urls import reverse
 
+# Declare the global variable
+global_quantity = 0
+
+def set_global_quantity(quantity):   
+    global global_quantity
+    global_quantity = quantity
+
+def get_global_quantity():    # To retrieve the global quantity value in remove_item fn
+    return global_quantity
 
 def show_cart(request):
     user = request.user
@@ -23,7 +32,7 @@ def show_cart(request):
 def add_to_cart(request):
     if request.method == 'POST':
         user = request.user
-        if hasattr(user, 'customer_profile'):   # hasattr() function: This built-in Python function checks if an object has a specific attribute. It returns True if the attribute exists and False otherwise.
+        if hasattr(user, 'customer_profile'):
             customer = user.customer_profile
         else:
             return HttpResponse("User does not have a customer profile.", status=400)
@@ -33,9 +42,10 @@ def add_to_cart(request):
         size_value = request.POST.get('size')
         quantity = int(request.POST.get('quantity', 1))  # Default to 1 if not provided or invalid
 
-        
+        if quantity <= 0:
+            messages.info(request, "Invalid quantity.")
+            return redirect(reverse('detail_product', kwargs={'pk': product_id}))
 
-        # Validate and get ProductSize
         try:
             size = Size.objects.get(size=size_value)
             product_size = ProductSize.objects.get(
@@ -45,56 +55,53 @@ def add_to_cart(request):
         except (Size.DoesNotExist, ProductSize.DoesNotExist):
             product_size = None
 
-        if product.stock < quantity:
+        if product.stock == 0:
+            messages.info(request, "Product is out of stock.")
+            return redirect(reverse('detail_product', kwargs={'pk': product_id}))
+        elif product.stock < quantity:
             messages.info(request, "Not enough stock for this product.")
-            # Generate the URL for the product detail view
-            return redirect(reverse('detail_product', kwargs={'pk': int(product_id)}))  # pk is used because pk is the url parameter used in the url
-        
+            return redirect(reverse('detail_product', kwargs={'pk': product_id}))
 
-        # Create or get the order (cart)
         cart_obj, created = Order.objects.get_or_create(
             owner=customer,
             order_status=Order.CART_STAGE
         )
 
-        # Try to find existing OrderedItem or create a new one
-        try:
-            ordered_item = OrderedItem.objects.filter(
-                product=product,
-                size=product_size,
-                owner=cart_obj
-            ).first()  # To handle if multiple objects are present
+        ordered_item, created = OrderedItem.objects.get_or_create(
+            product=product,
+            size=product_size,
+            owner=cart_obj,
+            defaults={'quantity': quantity}
+        )
 
-            if ordered_item:
-                ordered_item.quantity += quantity
-                ordered_item.save()
-            else:
-                ordered_item = OrderedItem.objects.create(
-                    product=product,
-                    quantity=quantity,
-                    size=product_size,
-                    owner=cart_obj
-                )
-            # Update stock
-            product.stock -= quantity
-            product.save()    
+        if not created:
+            ordered_item.quantity += quantity
+            ordered_item.save()
 
-        except OrderedItem.MultipleObjectsReturned:
-            # Handle case where multiple OrderedItem instances exist (optional)
-            pass
+        # Update stock
+        product.stock -= quantity
+        product.save()
+
+        # Set the global quantity
+        set_global_quantity(quantity)
 
         return redirect('cart')
 
     return render(request, 'cart.html')
 
 def remove_item(request, pk):
-    
     try:
         item = OrderedItem.objects.get(id=pk)
+        product = item.product
+
+        # Update stock using the global quantity
+        global_quantity = get_global_quantity()
+        product.stock += global_quantity
+        product.save()
+
         item.delete()
+
     except OrderedItem.DoesNotExist:
-        print(f"OrderedItem with pk {pk} does not exist")
         return HttpResponse(f"OrderedItem with pk {pk} does not exist", status=404)
+
     return redirect('cart')
-
-

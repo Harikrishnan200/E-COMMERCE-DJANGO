@@ -39,11 +39,22 @@ def detail_product(request,pk=None):
     product = Product.objects.get(id=pk)
     sub_images = SubImage.objects.filter(product=product)   # To filter the sub images of the product
     sizes = ProductSize.objects.filter(product=product)
+
+    if product.stock == 0:
+        message = "Out of Stock"
+    elif product.stock <= 5:
+        message = f"Only {product.stock} items left."
+    elif product.stock <=10:    
+        message = "Only few left."
+    else:
+        message = None
+
  
     context = {
         'product': product,
         'sub_images': sub_images,
-        'sizes': sizes
+        'sizes': sizes,
+        'few_item_message': message
     }
     return render(request,'product_details.html',context)
 

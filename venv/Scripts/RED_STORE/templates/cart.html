@@ -29,6 +29,8 @@
                 </div>
             </td>
             <td>{{item.quantity}}</td>
+            
+            <input type="hidden" name="cart_quantity" value="{{item.quantity}}">
             <td>$ {% multiply item.product.total_price  item.quantity %}</td>   <!--  multiply  is the template tag , it has two parameters quantity and price-->
         </tr>
 
