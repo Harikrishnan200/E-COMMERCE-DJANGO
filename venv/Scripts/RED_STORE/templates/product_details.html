@@ -73,7 +73,7 @@
             <h1>{{product.title}}</h1>
             <p>Model : {{product.model}}</p>
 
-            {% if product.discount_in_percentage is not None %}
+            {% if product.discount_in_percentage != 0 %}
         
             <h4 class="strikethrough">$ {{product.actual_price}}</h4>
             <h4>{{ product.discount_in_percentage }}% off</h4>

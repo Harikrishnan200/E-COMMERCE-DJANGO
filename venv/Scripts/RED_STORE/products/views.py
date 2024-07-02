@@ -28,9 +28,11 @@ def list_product(request,sort_slug=None):
 
     if sort_slug is not None:
         products = Product.objects.all().filter(slug=sort_slug).order_by('-priority')
-        print(products)
-        paginator = Paginator(products, 3)
-        products = paginator.get_page(page)
+        if products:
+            paginator = Paginator(products, 3)
+            products = paginator.get_page(page)
+        else:
+            products = None    
         context = {
             'products': products
         }
