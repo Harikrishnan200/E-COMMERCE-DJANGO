@@ -26,8 +26,8 @@ class Product(models.Model):
     )
     
     title = models.CharField(max_length=200)
-    model = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=200, unique=True)
+    model = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=200)  # unique = True avoided
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category')
     price = models.FloatField()
     actual_price = models.FloatField(default=0.0)

@@ -19,12 +19,24 @@ def index(request):
 # values, will be available only within the scope of that specific template rendering. If layout.html includes other templates or if it
 # extends from a base template, those keys will also be available in those included or extended templates during that rendering process.
 
-def list_product(request):
+def list_product(request,sort_slug=None):
+
     page = 1
 
     if 'page' in request.GET:
         page = request.GET.get('page')
 
+    if sort_slug is not None:
+        products = Product.objects.all().filter(slug=sort_slug).order_by('-priority')
+        print(products)
+        paginator = Paginator(products, 3)
+        products = paginator.get_page(page)
+        context = {
+            'products': products
+        }
+        return render(request,'product_page_content.html',context)   
+        
+        
     # products = Product.objects.all()
     products = Product.objects.order_by('-priority')   # To fetech the products with higher priority
     paginator = Paginator(products, 3)
@@ -34,11 +46,15 @@ def list_product(request):
     }
     return render(request,'product_page_content.html',context)
 
-def detail_product(request,pk=None):
+def detail_product(request,pk=None,product_slug=None):
     sub_images = None
     product = Product.objects.get(id=pk)
     sub_images = SubImage.objects.filter(product=product)   # To filter the sub images of the product
     sizes = ProductSize.objects.filter(product=product)
+
+    related_products = Product.objects.all().filter(slug = product_slug).filter(is_available = True)
+    print(product_slug)
+    print(related_products)
 
     if product.stock == 0:
         message = "Out of Stock"
@@ -54,8 +70,17 @@ def detail_product(request,pk=None):
         'product': product,
         'sub_images': sub_images,
         'sizes': sizes,
-        'few_item_message': message
+        'few_item_message': message,
+        'related_products': related_products
     }
     return render(request,'product_details.html',context)
 
+
+# def sort_products(request,sort_slug=None):
+#     products = Product.objects.all().filter(slug=sort_slug)
+#     print(products)
+#     context = {
+#         'sorted_products': products
+#     }
+#     return render(request,'product_page_content.html',context)
 
