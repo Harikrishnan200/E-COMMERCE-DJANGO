@@ -13,7 +13,8 @@ def set_global_quantity(quantity):
     global global_quantity
     global_quantity = quantity
 
-def get_global_quantity():    # To retrieve the global quantity value in remove_item fn
+ # To retrieve the global quantity value in remove_item fn
+def get_global_quantity():   
     return global_quantity
 
 def show_cart(request):
@@ -105,3 +106,31 @@ def remove_item(request, pk):
         return HttpResponse(f"OrderedItem with pk {pk} does not exist", status=404)
 
     return redirect('cart')
+
+
+def order_confirmed(request):
+    user = request.user
+    customer = user.customer_profile
+    cart_obj = Order.objects.get(owner=customer, order_status=Order.CART_STAGE)
+    # for item in cart_obj.added_carts.all():
+    #     print(item.product.title)
+    cart_obj.order_status = Order.ORDER_CONFIRMED
+    cart_obj.save()
+
+    return redirect('cart')
+
+
+def view_orders(request):
+    user = request.user
+    customer = user.customer_profile
+    orders = Order.objects.filter(owner=customer).exclude(order_status=Order.CART_STAGE)
+
+    # Create a list of ordered items for each order
+    order_items = OrderedItem.objects.filter(owner__in=orders)
+
+    context = {
+        'orders': orders,
+        'order_items': order_items
+    }
+
+    return render(request, 'orders.html', context)

@@ -1,0 +1,32 @@
+{% extends 'product_page_layout.html' %}
+
+{% load static %}
+{% load multiply %}
+{% load get_total_price %}
+
+{% block content %}
+
+<div class="small-container cart-page">
+    <table>
+        <tr>
+            <th>Product Title</th>
+            <th>Quantity</th>
+            <!-- Add more columns as needed -->
+        </tr>
+        {% for order in orders %}
+            {% for item in order.added_carts.all %}
+            <tr>
+                <td>{{ item.product.title }}</td>
+                <td>{{ item.quantity }}</td>
+                <!-- Add more cells as needed -->
+            </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+   
+    
+    
+</div>
+
+    
+    {% endblock %}
