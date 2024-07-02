@@ -5,18 +5,24 @@ from products.models import Product, ProductSize, Size
 from django.http import HttpResponse
 from django.contrib import messages
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 # Declare the global variable
 global_quantity = 0
 
+@login_required(login_url='account')
 def set_global_quantity(quantity):   
     global global_quantity
     global_quantity = quantity
 
+
  # To retrieve the global quantity value in remove_item fn
+@login_required(login_url='account')
 def get_global_quantity():   
     return global_quantity
 
+
+@login_required(login_url='account')
 def show_cart(request):
     user = request.user
     customer = user.customer_profile
@@ -30,6 +36,8 @@ def show_cart(request):
     }
     return render(request, 'cart.html', context)
 
+
+@login_required(login_url='account')
 def add_to_cart(request):
     if request.method == 'POST':
         user = request.user
@@ -90,6 +98,7 @@ def add_to_cart(request):
 
     return render(request, 'cart.html')
 
+@login_required(login_url='account')
 def remove_item(request, pk):
     try:
         item = OrderedItem.objects.get(id=pk)
@@ -107,7 +116,7 @@ def remove_item(request, pk):
 
     return redirect('cart')
 
-
+@login_required(login_url='account')
 def order_confirmed(request):
     user = request.user
     customer = user.customer_profile
@@ -120,6 +129,7 @@ def order_confirmed(request):
     return redirect('cart')
 
 
+@login_required(login_url='account')
 def view_orders(request):
     user = request.user
     customer = user.customer_profile

@@ -9,15 +9,41 @@
 <div class="small-container cart-page">
     <table>
         <tr>
-            <th>Product Title</th>
+            <th>Product</th>
             <th>Quantity</th>
-            <!-- Add more columns as needed -->
+            <th>Substotal</th>
+            <th>Date</th>
+            <th>Status</th>
+            
         </tr>
         {% for order in orders %}
             {% for item in order.added_carts.all %}
             <tr>
-                <td>{{ item.product.title }}</td>
+                <td>
+                    <div class="cart-info">
+                        <a href="{% url 'detail_product' item.product.id item.product.slug %}"><img src="{{item.product.image.url}}"></a>
+                        <div>
+                            <p>{{item.product.title}}</p>
+                            <small>Price: $ {{item.product.price}}</small>
+                            <br>
+                
+                            
+                        </div>
+                    </div>
+                </td>
                 <td>{{ item.quantity }}</td>
+                <td>{{item.product.total_price}}</td>
+                <td>{{order.created_at}}</td>
+
+                {% if item.owner.order_status  == 1%}
+                    <td>Order Confirmed</td>
+                {% elif item.owner.order_status == 2 %}
+                    <td>Order Processed</td>
+                {% elif item.owner.order_status == 3 %}
+                    <td>Order Delivered</td>
+                {% elif item.owner.order_status == 4 %}
+                    <td>Order Rejected</td>
+                {% endif %}
                 <!-- Add more cells as needed -->
             </tr>
             {% endfor %}

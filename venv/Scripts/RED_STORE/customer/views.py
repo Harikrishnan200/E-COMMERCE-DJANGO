@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from customer.models import Customer
 from django.contrib import messages
 from django.contrib.auth import authenticate,login as userLogin , logout as userLogout
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -62,6 +63,7 @@ def account(request):
             return redirect('account')    
     return render(request,'account.html',context)
 
+@login_required(login_url='account')
 def logout(request):
     userLogout(request)
     return redirect('index')

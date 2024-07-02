@@ -29,7 +29,7 @@ def list_product(request,sort_slug=None):
     if sort_slug is not None:
         products = Product.objects.all().filter(slug=sort_slug).order_by('-priority')
         if products:
-            paginator = Paginator(products, 3)
+            paginator = Paginator(products, 8)
             products = paginator.get_page(page)
         else:
             products = None    
@@ -41,12 +41,13 @@ def list_product(request,sort_slug=None):
         
     # products = Product.objects.all()
     products = Product.objects.order_by('-priority')   # To fetech the products with higher priority
-    paginator = Paginator(products, 3)
+    paginator = Paginator(products, 8)
     products = paginator.get_page(page)
     context = {
         'products': products
     }
     return render(request,'product_page_content.html',context)
+
 
 def detail_product(request,pk=None,product_slug=None):
     sub_images = None
