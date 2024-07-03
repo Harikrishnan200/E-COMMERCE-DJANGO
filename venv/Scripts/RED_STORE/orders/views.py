@@ -10,19 +10,18 @@ from django.contrib.auth.decorators import login_required
 # Declare the global variable
 global_quantity = 0
 
-@login_required(login_url='account')
+
 def set_global_quantity(quantity):   
     global global_quantity
     global_quantity = quantity
 
 
  # To retrieve the global quantity value in remove_item fn
-@login_required(login_url='account')
+
 def get_global_quantity():   
     return global_quantity
 
 
-@login_required(login_url='account')
 def show_cart(request):
     user = request.user
     customer = user.customer_profile
@@ -80,7 +79,7 @@ def add_to_cart(request):
             product=product,
             size=product_size,
             owner=cart_obj,
-            defaults={'quantity': quantity}
+            defaults={'quantity': quantity}  # In Django's get_or_create method, the defaults argument serves a specific purpose when you are trying to either fetch an existing record or create a new one if it doesn't already exist. The defaults field allows you to specify values for additional fields that should be set if a new record is created.
         )
 
         if not created:
@@ -99,7 +98,7 @@ def add_to_cart(request):
     return render(request, 'cart.html')
 
 @login_required(login_url='account')
-def remove_item(request, pk):
+def remove_item(request, pk=None):
     try:
         item = OrderedItem.objects.get(id=pk)
         product = item.product
@@ -136,7 +135,7 @@ def view_orders(request):
     orders = Order.objects.filter(owner=customer).exclude(order_status=Order.CART_STAGE)
 
     # Create a list of ordered items for each order
-    order_items = OrderedItem.objects.filter(owner__in=orders)
+    order_items = OrderedItem.objects.filter(owner__in=orders)  # order has more than on object so use "_in" look up
 
     context = {
         'orders': orders,
