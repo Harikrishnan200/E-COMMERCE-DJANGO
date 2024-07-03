@@ -16,8 +16,8 @@
             <th>Status</th>
             
         </tr>
-        {% for order in orders %}
-            {% for item in order.added_carts.all %}
+        
+            {% for item in order_items.all %}
             <tr>
                 <td>
                     <div class="cart-info">
@@ -47,7 +47,6 @@
                 <!-- Add more cells as needed -->
             </tr>
             {% endfor %}
-        {% endfor %}
     </table>
    
     
