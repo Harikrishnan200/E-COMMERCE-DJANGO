@@ -22,9 +22,13 @@ def get_global_quantity():
     return global_quantity
 
 
+@login_required(login_url='account')
 def show_cart(request):
     user = request.user
-    customer = user.customer_profile
+    
+    # Ensure the customer profile exists
+    customer, created = Customer.objects.get_or_create(user=user)  # # instead of using customer = user.customer_profile
+
     cart_obj, created = Order.objects.get_or_create(
         owner=customer,
         order_status=Order.CART_STAGE
@@ -35,15 +39,13 @@ def show_cart(request):
     }
     return render(request, 'cart.html', context)
 
-
 @login_required(login_url='account')
 def add_to_cart(request):
     if request.method == 'POST':
         user = request.user
-        if hasattr(user, 'customer_profile'):
-            customer = user.customer_profile
-        else:
-            return HttpResponse("User does not have a customer profile.", status=400)
+        
+        # To ensure the customer profile exists
+        customer, created = Customer.objects.get_or_create(user=user)   # instead of using customer = user.customer_profile
 
         product_id = request.POST.get('product_id')
         product = get_object_or_404(Product, id=product_id)
@@ -79,7 +81,7 @@ def add_to_cart(request):
             product=product,
             size=product_size,
             owner=cart_obj,
-            defaults={'quantity': quantity}  # In Django's get_or_create method, the defaults argument serves a specific purpose when you are trying to either fetch an existing record or create a new one if it doesn't already exist. The defaults field allows you to specify values for additional fields that should be set if a new record is created.
+            defaults={'quantity': quantity}
         )
 
         if not created:
@@ -96,6 +98,8 @@ def add_to_cart(request):
         return redirect('cart')
 
     return render(request, 'cart.html')
+
+
 
 @login_required(login_url='account')
 def remove_item(request, pk=None):

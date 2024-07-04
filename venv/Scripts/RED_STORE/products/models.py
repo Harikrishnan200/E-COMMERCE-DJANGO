@@ -15,7 +15,6 @@ class Category(models.Model):
     
 
     
-from django.db import models
 
 class Product(models.Model):
     LIVE = 1
