@@ -53,7 +53,6 @@ def account(request):
         if user is not None:
             if user.check_password(password):
                 userLogin(request,user)
-                messages.success(request,'Login successful')
                 return redirect('index')
             else:
                 messages.error(request,'Invalid credentials')

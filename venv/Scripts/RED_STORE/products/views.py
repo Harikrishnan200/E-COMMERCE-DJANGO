@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 # Create your views here.
 
 def index(request):
-    featured_products = Product.objects.filter(is_available = True).order_by('-priority')[:4]  # To fetch firts 4 products with higher priority (decenting order)
-    latest_products = Product.objects.filter(is_available = True).order_by('-id')[:4]    # To fetch firts 4 last added products (ie the products with higher id)
+    featured_products = Product.objects.order_by('-priority')[:4]  # To fetch firts 4 products with higher priority (decenting order)
+    latest_products = Product.objects.order_by('-id')[:4]    # To fetch firts 4 last added products (ie the products with higher id)
     
     context = {
         'featured_products': featured_products,
@@ -27,7 +27,7 @@ def list_product(request,sort_slug=None):
         page = request.GET.get('page')
 
     if sort_slug is not None:
-        products = Product.objects.all().filter(slug=sort_slug).order_by('-priority').filter(is_available = True)
+        products = Product.objects.all().filter(slug=sort_slug).order_by('-priority')
         if products:
             paginator = Paginator(products, 8)
             products = paginator.get_page(page)
@@ -40,7 +40,7 @@ def list_product(request,sort_slug=None):
         
         
     # products = Product.objects.all()
-    products = Product.objects.order_by('-priority').filter(is_available = True)   # To fetech the products with higher priority
+    products = Product.objects.order_by('-priority')   # To fetech the products with higher priority
     paginator = Paginator(products, 8)
     products = paginator.get_page(page)
     context = {
